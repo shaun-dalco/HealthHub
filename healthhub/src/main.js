@@ -1,29 +1,43 @@
 import { loadState } from '@nextcloud/initial-state'
 
 function main() {
-	// 1) Load dummy health data injected from PageController
-	const state = loadState('healthhub', 'healthhub_initial_state')
+	console.log('[HealthHub] main() start')
 
-	// 2) Main content container from templates/index.php
 	const container = document.querySelector('#app-content #healthhub')
+	console.log('[HealthHub] container =', container)
+
 	if (!container) {
-		console.warn('HealthHub: #app-content #healthhub not found')
+		console.error('[HealthHub] #app-content #healthhub not found')
 		return
 	}
 
-	// 3) Wire sidebar clicks
+	let state
+	try {
+		state = loadState('healthhub', 'healthhub_initial_state')
+		console.log('[HealthHub] Loaded initial state:', state)
+	} catch (e) {
+		console.error('[HealthHub] Failed to load initial state', e)
+		container.innerHTML = `
+			<div class="hh-section">
+				<h2>HealthHub</h2>
+				<p>Failed to load initial state <code>healthhub_initial_state</code>.</p>
+			</div>
+		`
+		return
+	}
+
 	setupSidebarNavigation(state, container)
 
-	// 4) Default section: overview
 	setActiveSidebarEntry('overview')
 	renderSection('overview', container, state)
 }
 
-/**
- * Attach click handlers to side menu entries
- */
 function setupSidebarNavigation(state, container) {
 	const entries = document.querySelectorAll('#app-navigation .app-navigation-entry')
+
+	if (!entries.length) {
+		console.warn('[HealthHub] No .app-navigation-entry elements found')
+	}
 
 	entries.forEach(entry => {
 		const section = entry.dataset.section
@@ -39,9 +53,6 @@ function setupSidebarNavigation(state, container) {
 	})
 }
 
-/**
- * Visually mark the active sidebar entry
- */
 function setActiveSidebarEntry(section) {
 	const entries = document.querySelectorAll('#app-navigation .app-navigation-entry')
 	entries.forEach(entry => {
@@ -53,9 +64,6 @@ function setActiveSidebarEntry(section) {
 	})
 }
 
-/**
- * Decide which section to render
- */
 function renderSection(section, container, state) {
 	switch (section) {
 	case 'overview':
@@ -78,9 +86,6 @@ function renderSection(section, container, state) {
 	}
 }
 
-/**
- * Overview: show a summary card grid
- */
 function renderOverview(container, state) {
 	const data = state.overview || {}
 	container.innerHTML = `
@@ -117,9 +122,6 @@ function renderOverview(container, state) {
 	`
 }
 
-/**
- * Heart rate: simple table of timestamp + bpm
- */
 function renderHeartRate(container, state) {
 	const series = state.heartRate || []
 
@@ -148,9 +150,6 @@ function renderHeartRate(container, state) {
 	`
 }
 
-/**
- * Steps: daily step counts
- */
 function renderSteps(container, state) {
 	const days = state.steps || []
 
@@ -179,9 +178,6 @@ function renderSteps(container, state) {
 	`
 }
 
-/**
- * Sleep: date, duration, quality score
- */
 function renderSleep(container, state) {
 	const nights = state.sleep || []
 
@@ -212,9 +208,6 @@ function renderSleep(container, state) {
 	`
 }
 
-/**
- * Weight: trend over time
- */
 function renderWeight(container, state) {
 	const entries = state.weight || []
 
@@ -243,9 +236,6 @@ function renderWeight(container, state) {
 	`
 }
 
-/**
- * Fallback for unknown sections
- */
 function renderPlaceholder(container, section) {
 	container.innerHTML = `
 		<div class="hh-section">
@@ -255,9 +245,6 @@ function renderPlaceholder(container, section) {
 	`
 }
 
-/**
- * Helpers
- */
 function safeNumber(value, fallback) {
 	return (value === null || value === undefined || Number.isNaN(value))
 		? fallback
@@ -276,7 +263,7 @@ function escapeHtml(str) {
 		.replace(/'/g, '&#039;')
 }
 
-// wait for page to be fully loaded
 document.addEventListener('DOMContentLoaded', () => {
+	console.log('[HealthHub] DOMContentLoaded')
 	main()
 })

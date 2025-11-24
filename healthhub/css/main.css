@@ -1,0 +1,96 @@
+/* Layout: sidebar on the left, content on the right */
+#app.healthhub {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Sidebar */
+#app-navigation {
+    width: 200px; /* narrower sidebar */
+    flex-shrink: 0;
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+}
+
+/* Main content area */
+#app-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;   /* center the main panel */
+    padding: 24px;
+    overflow: auto;
+    box-sizing: border-box;
+}
+
+/* Inner content wrapper */
+#healthhub-main-panel {
+    width: 100%;
+    max-width: 1100px;         /* center column, looks clean */
+    box-sizing: border-box;
+}
+
+/* Highlight active sidebar entry */
+#app-navigation .app-navigation-entry.active > a {
+    background-color: rgba(0, 0, 0, 0.05);
+    font-weight: 600;
+}
+
+/* Section title */
+.hh-section-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+/* Overview cards */
+.hh-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.hh-card {
+    background: var(--color-background-darker, #f7f7f7);
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.hh-card-label {
+    font-size: 12px;
+    opacity: 0.7;
+    margin-bottom: 4px;
+}
+
+.hh-card-value {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* Tables */
+.hh-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--color-background-darker, #fafafa);
+    margin-top: 12px;
+}
+
+.hh-table th,
+.hh-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.hh-table th {
+    text-align: left;
+    font-weight: 600;
+}
+
+.hh-updated-at {
+    margin-top: 12px;
+    font-size: 12px;
+    opacity: 0.7;
+}

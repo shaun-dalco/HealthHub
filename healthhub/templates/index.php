@@ -42,14 +42,10 @@ Util::addStyle($appId, 'main');
 
     <!-- Main content panel -->
     <div id="app-content">
-        <?php if (!empty($_['app_version'])): ?>
-            <h3>Health Hub app version: <?php p($_['app_version']); ?></h3>
-        <?php endif; ?>
-
         <div id="healthhub-main-panel">
-            <!-- Vue / JS app root -->
             <div id="healthhub"></div>
         </div>
     </div>
+
 
 </div>
