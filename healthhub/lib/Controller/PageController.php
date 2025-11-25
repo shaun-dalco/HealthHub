@@ -17,22 +17,21 @@ use OCP\IRequest;
 
 class PageController extends Controller {
 
-	/** @var IInitialState */
-	private $initialStateService;
-	/** @var IConfig */
-	private $config;
-	/** @var IAppConfig */
-	private $appConfig;
-	/** @var string|null */
-	private $userId;
+	private IInitialState $initialStateService;
+	private IConfig $config;
+	private IAppConfig $appConfig;
+	private ?string $userId;
 
-	public function __construct(string $appName,
-								IRequest $request,
-								IInitialState $initialStateService,
-								IConfig $config,
-								IAppConfig $appConfig,
-								?string $userId) {
+	public function __construct(
+		string $appName,
+		IRequest $request,
+		IInitialState $initialStateService,
+		IConfig $config,
+		IAppConfig $appConfig,
+		?string $userId,
+	) {
 		parent::__construct($appName, $request);
+
 		$this->initialStateService = $initialStateService;
 		$this->config = $config;
 		$this->appConfig = $appConfig;
@@ -40,27 +39,30 @@ class PageController extends Controller {
 	}
 
 	/**
-	 * Main app page: provide dummy health data + template
+	 * Main app page: provide dummy health data + template.
+	 *
+	 * Frontend loads this with:
+	 *   loadState('healthhub', 'healthhub_initial_state')
 	 */
 	#[NoCSRFRequired]
 	#[NoAdminRequired]
 	#[FrontpageRoute(verb: 'GET', url: '/')]
 	public function index(): TemplateResponse {
-		// 1) Build dummy health data
+		// 1) Build health data (dummy for now)
 		$dummyHealthData = $this->getDummyHealthData();
 
 		// 2) Expose it to the frontend via initialState
-		//    JS can load with: OCP.InitialState.loadState('healthhub', 'healthhub_initial_state')
+		//    JS: loadState('healthhub', 'healthhub_initial_state')
 		$this->initialStateService->provideInitialState(
 			'healthhub_initial_state',
-			$dummyHealthData
+			$dummyHealthData,
 		);
 
-		// 3) App version for display in the template
+		// 3) App version for display / debugging
 		$appVersion = $this->appConfig->getValueString(
 			Application::APP_ID,
 			'installed_version',
-			lazy: true
+			lazy: true,
 		);
 
 		return new TemplateResponse(
@@ -68,24 +70,31 @@ class PageController extends Controller {
 			'index',
 			[
 				'app_version' => $appVersion,
-			]
+			],
 		);
 	}
 
 	/**
-	 * Dummy health data for testing UI wiring
+	 * Dummy health data for testing UI wiring.
+	 *
+	 * This structure matches what MyMainContent.vue expects:
+	 *   - overview
+	 *   - heartRate[]
+	 *   - steps[]
+	 *   - sleep[]
+	 *   - weight[]
 	 */
 	private function getDummyHealthData(): array {
 		return [
-			// High-level summary (you can show this on "Overview")
+			// High-level summary (for "Overview")
 			'overview' => [
-				'totalStepsToday'      => 10432,
-				'avgHeartRateToday'    => 72,
-				'maxHeartRateToday'    => 138,
-				'minHeartRateToday'    => 58,
-				'sleepLastNightHours'  => 7.4,
-				'weightKg'             => 78.3,
-				'updatedAt'            => '2025-11-23T09:00:00Z',
+				'totalStepsToday'     => 10432,
+				'avgHeartRateToday'   => 72,
+				'maxHeartRateToday'   => 138,
+				'minHeartRateToday'   => 58,
+				'sleepLastNightHours' => 7.4,
+				'weightKg'            => 78.3,
+				'updatedAt'           => '2025-11-23T09:00:00Z',
 			],
 
 			// Heart rate timeseries (for "Heart rate" menu item)
@@ -124,6 +133,4 @@ class PageController extends Controller {
 			],
 		];
 	}
-
-	
 }
