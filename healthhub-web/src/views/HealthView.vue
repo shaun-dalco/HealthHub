@@ -7,7 +7,10 @@
         </div>
 
         <!-- Editable rows -->
-        <div class="simpleList">
+        <button class="toggleBtn" @click="showSteps = !showSteps">
+            Edit Steps
+        </button>
+        <div class="simpleList" v-show="showSteps">
             <div class="row" v-for="(r, i) in rows" :key="i">
                 <input class="labelInput" v-model="r.day" placeholder="YYYY-MM-DD" />
                 <span class="colon">:</span>
@@ -32,7 +35,10 @@
         </div>
 
         <!-- Editable rows (Heart Rate) -->
-        <div class="simpleList">
+        <button class="toggleBtn" @click="showHR = !showHR">
+            Edit HR
+        </button>
+        <div class="simpleList" v-show="showHR">
             <div class="row" v-for="(r, i) in hrRows" :key="i">
                 <input class="labelInput" v-model="r.day" placeholder="YYYY-MM-DD" />
                 <span class="colon">:</span>
@@ -60,7 +66,12 @@
         CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip,
     } from "chart.js";
 
+
+
     ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip);
+
+    const showSteps = ref(false)
+    const showHR = ref(false)
 
     // ----- STEPS -----
     type StepRow = { day: string; steps: number };

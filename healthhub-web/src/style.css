@@ -80,7 +80,8 @@
 }
 
 .simpleList {
-    margin: 0 0 14px;
+    margin-left: auto;
+    margin-right: auto;
     display: grid;
     gap: 10px;
     max-width: 520px;
@@ -116,6 +117,17 @@
     border-radius: 12px;
     padding: 10px 12px;
     cursor: pointer;
+}
+
+.toggleBtn {
+    width: 50%;
+    display: block;
+    margin: 0 auto;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 10px 12px;
+    cursor: pointer;
+    margin-bottom: 10px;
 }
 
 .actions {
