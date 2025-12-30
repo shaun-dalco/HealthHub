@@ -9,20 +9,21 @@ import androidx.lifecycle.lifecycleScope
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.PermissionController
 import androidx.health.connect.client.permission.HealthPermission
-import androidx.health.connect.client.records.StepsRecord
+import androidx.health.connect.client.records.HeartRateRecord
 import com.hotmail.shaundalco.healthhub.AppUtils
 import com.hotmail.shaundalco.healthhub.R
 import kotlinx.coroutines.launch
 import java.time.ZoneId
 
-class StepsLastMonthFragment : Fragment(R.layout.fragment_steps_last_month) {
+class HeartRateLastMonthFragment : Fragment(R.layout.fragment_heart_rate_last_month) {
 
     private lateinit var healthConnectClient: HealthConnectClient
     private lateinit var permissionLauncher:
             androidx.activity.result.ActivityResultLauncher<Set<String>>
 
+    // Heart rate permission (NOT steps)
     private val requiredPermissions = setOf(
-        HealthPermission.getReadPermission(StepsRecord::class)
+        HealthPermission.getReadPermission(HeartRateRecord::class)
     )
 
     private val zoneId: ZoneId get() = ZoneId.systemDefault()
@@ -55,7 +56,7 @@ class StepsLastMonthFragment : Fragment(R.layout.fragment_steps_last_month) {
         super.onViewCreated(view, savedInstanceState)
 
         val btnGrant = view.findViewById<Button>(R.id.btnGrantHealthConnect)
-        val btnLoad = view.findViewById<Button>(R.id.btnLoadSteps)
+        val btnLoad = view.findViewById<Button>(R.id.btnLoadSteps) // id can stay; it’s just a button
 
         btnGrant.setOnClickListener {
             view.findViewById<TextView>(R.id.output)?.text =
@@ -77,7 +78,7 @@ class StepsLastMonthFragment : Fragment(R.layout.fragment_steps_last_month) {
             ensurePermissionsThenReadAndUpload()
         }
 
-        // Initial button state
+        // Initial state
         lifecycleScope.launch {
             val hasAll = AppUtils.hasAllPermissions(healthConnectClient, requiredPermissions)
             updateButtons(hasAll)
@@ -99,50 +100,50 @@ class StepsLastMonthFragment : Fragment(R.layout.fragment_steps_last_month) {
                 return@launch
             }
 
-            // Debug read (prints daily totals)
-            readStepsLast30Days()
+            // Debug read: show last 30 days avg BPM
+            readHeartRateAvgLast30Days()
 
-            // Upload using shared AppUtils helper
-            view?.findViewById<TextView>(R.id.output2)?.text =
-                AppUtils.uploadLastNDaysDailyLongMetric(
-                    healthConnectClient = healthConnectClient,
-                    baseUrl = "http://192.168.1.11:3001",
-                    endpointPath = "/api/steps/addbulk",
-                    metric = StepsRecord.COUNT_TOTAL,
-                    valueKey = "steps",
-                    days = 30,
-                    zoneId = zoneId,
-                    logTag = "StepsUpload",
-                )
+            // Upload: reuse generic helper in AppUtils
+            val output2 = view?.findViewById<TextView>(R.id.output2)
+            output2?.text = AppUtils.uploadLastNDaysDailyLongMetric(
+                healthConnectClient = healthConnectClient,
+                baseUrl = "http://192.168.1.11:3001",
+                endpointPath = "/api/heartrate/addbulk",
+                metric = HeartRateRecord.BPM_AVG,
+                valueKey = "bpmAvg",
+                days = 30,
+                zoneId = zoneId,
+                logTag = "HeartRateUpload",
+            )
         }
     }
 
     /*
-      Debug only: read daily steps totals for the last 30 days and print them.
+      Debug only: read daily average BPM for the last 30 days and print it.
      */
-    private fun readStepsLast30Days() {
+    private fun readHeartRateAvgLast30Days() {
         lifecycleScope.launch {
             val output = view?.findViewById<TextView>(R.id.output)
 
             try {
                 val range = AppUtils.lastNDaysRange(days = 30, zoneId = zoneId)
-
                 val byDay = AppUtils.aggregateDailyLongMetric(
                     healthConnectClient = healthConnectClient,
-                    metric = StepsRecord.COUNT_TOTAL,
+                    metric = HeartRateRecord.BPM_AVG,
                     range = range
                 )
 
                 val sb = StringBuilder()
                 var d = range.startDateInclusive
                 while (d.isBefore(range.endDateExclusive)) {
-                    sb.append(d).append(" : ").append(byDay[d] ?: 0L).append('\n')
+                    val bpmAvg = byDay[d] ?: 0L
+                    sb.append(d).append(" : ").append(bpmAvg).append(" bpm (avg)").append('\n')
                     d = d.plusDays(1)
                 }
 
                 output?.text = sb.toString()
             } catch (e: Exception) {
-                output?.text = "Error reading steps: ${e.message}"
+                output?.text = "Error reading heart rate: ${e.message}"
             }
         }
     }
