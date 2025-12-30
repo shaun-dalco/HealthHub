@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 
 const stepsRoutes = require("./routes/steps");
+const heartrateRoutes = require("./routes/heartrate");
 const caloriesRoutes = require("./routes/calories");
 
 const app = express();
@@ -9,6 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/steps", stepsRoutes);
+app.use("/api/heartrate", heartrateRoutes);
 app.use("/api/calories", caloriesRoutes);
 
 app.use(express.json({ limit: "1mb" }));

@@ -110,7 +110,7 @@ class HeartRateLastMonthFragment : Fragment(R.layout.fragment_heart_rate_last_mo
                 baseUrl = "http://192.168.1.11:3001",
                 endpointPath = "/api/heartrate/addbulk",
                 metric = HeartRateRecord.BPM_AVG,
-                valueKey = "bpmAvg",
+                valueKey = "hr",
                 days = 30,
                 zoneId = zoneId,
                 logTag = "HeartRateUpload",

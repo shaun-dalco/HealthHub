@@ -27,7 +27,28 @@
         <hr />
 
         <h1>Heart Rate</h1>
-        <p>Stub. This will later include: steps, heart rate, sleep, etc.</p>
+        <div class="chartWrap">
+            <Line :data="chartDataHR" :options="options" :key="chartKeyHR" />
+        </div>
+
+        <!-- Editable rows (Heart Rate) -->
+        <div class="simpleList">
+            <div class="row" v-for="(r, i) in hrRows" :key="i">
+                <input class="labelInput" v-model="r.day" placeholder="YYYY-MM-DD" />
+                <span class="colon">:</span>
+                <input class="valueInput" type="number" v-model.number="r.hr" placeholder="0" />
+                <button class="removeBtn" type="button" @click="removeHrRow(i)">X</button>
+            </div>
+
+            <div class="actions">
+                <button class="addBtn" type="button" @click="addHrRow()">+ Add</button>
+                <button class="saveBtn" type="button" @click="saveHeartRate()" :disabled="savingHR">
+                    {{ savingHR ? "Saving..." : "Save" }}
+                </button>
+                <span v-if="savedMsgHR" class="savedMsg">{{ savedMsgHR }}</span>
+            </div>
+        </div>
+
     </section>
 </template>
 
@@ -41,6 +62,7 @@
 
     ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip);
 
+    // ----- STEPS -----
     type StepRow = { day: string; steps: number };
 
     const rows = ref<StepRow[]>([]);
@@ -100,5 +122,73 @@
         await load(); // reload from DB so you know it’s persisted
     }
 
-    onMounted(load);
+    // ----- Heart Rate -----
+    type HeartRateRow = { day: string; hr: number };
+
+    const hrRows = ref<HeartRateRow[]>([]);
+    const savingHR = ref(false);
+    const savedMsgHR = ref("");
+    const chartKeyHR = ref(0);
+
+    const chartDataHR = computed(() => ({
+        labels: hrRows.value.map((r) => r.day),
+        datasets: [
+            {
+                label: "Avg BPM",
+                data: hrRows.value.map((r) => r.hr),
+                borderColor: "#79a7f8",
+            },
+        ],
+    }));
+
+    async function loadHeartRate() {
+        savedMsgHR.value = "";
+        const res = await fetch("http://localhost:3001/api/heartrate");
+        if (!res.ok) {
+            savedMsgHR.value = "Failed to load heart rate";
+            return;
+        }
+        const data: HeartRateRow[] = await res.json();
+        hrRows.value = data;
+        chartKeyHR.value++;
+    }
+
+    function addHrRow() {
+        hrRows.value.push({ day: "2025-12-01", hr: 0 });
+        chartKeyHR.value++;
+    }
+
+    function removeHrRow(i: number) {
+        hrRows.value.splice(i, 1);
+        chartKeyHR.value++;
+    }
+
+    async function saveHeartRate() {
+        savingHR.value = true;
+        savedMsgHR.value = "";
+
+        const payload = [...hrRows.value].sort((a, b) => a.day.localeCompare(b.day));
+
+        const res = await fetch("http://localhost:3001/api/heartrate/bulk", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+        });
+
+        savingHR.value = false;
+
+        if (!res.ok) {
+            savedMsgHR.value = "Save failed";
+            return;
+        }
+
+        savedMsgHR.value = "Saved";
+        await loadHeartRate(); // reload from DB
+    }
+
+    onMounted(async () => {
+        await load()
+        await loadHeartRate()
+    })
+
 </script>

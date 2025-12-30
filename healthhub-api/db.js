@@ -11,6 +11,14 @@ db.exec(`
 `);
 
 db.exec(`
+  CREATE TABLE IF NOT EXISTS hr (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    day TEXT NOT NULL UNIQUE,
+    hr INTEGER NOT NULL
+  );
+`);
+
+db.exec(`
   CREATE TABLE IF NOT EXISTS calories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     day TEXT NOT NULL UNIQUE,
