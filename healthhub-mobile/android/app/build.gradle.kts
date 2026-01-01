@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.room.ksp)
 }
 
 android {
@@ -51,6 +52,9 @@ dependencies {
     implementation(libs.health.connect)
     implementation(libs.okhttp)
     implementation(libs.androidx.preference)
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

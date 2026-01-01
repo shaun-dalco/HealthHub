@@ -11,15 +11,20 @@
         <item
             android:id="@+id/nav_gallery"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/menu_gallery" />
+            android:title="Settings" />
         <item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/menu_slideshow" />
+            android:title="Steps Sync" />
 
         <item
             android:id="@+id/nav_slideshow2"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/menu_slideshow" />
+            android:title="HR Sync" />
+
+        <item
+            android:id="@+id/nav_slideshow3"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Calories" />
     </group>
 </menu>

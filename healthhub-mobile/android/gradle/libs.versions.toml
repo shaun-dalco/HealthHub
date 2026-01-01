@@ -15,6 +15,7 @@ navigationUiKtx = "2.9.3"
 healthConnect = "1.1.0-alpha10"
 okhttp = "4.12.0"
 androidxPreference = "1.2.1"
+room = "2.6.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -31,8 +32,12 @@ androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation
 health-connect = { group = "androidx.health.connect", name = "connect-client", version.ref = "healthConnect" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 androidx-preference = { group = "androidx.preference", name = "preference-ktx", version.ref = "androidxPreference" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-ktx     = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-
+room-ksp = { id = "com.google.devtools.ksp", version = "1.9.22-1.0.16" }

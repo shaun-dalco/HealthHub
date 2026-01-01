@@ -1,11 +1,8 @@
 package com.hotmail.shaundalco.healthhub.ui
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
-import android.widget.CheckBox
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.fragment.app.Fragment
@@ -17,7 +14,6 @@ import androidx.health.connect.client.records.StepsRecord
 import androidx.lifecycle.lifecycleScope
 import com.hotmail.shaundalco.healthhub.AppUtils
 import com.hotmail.shaundalco.healthhub.R
-import com.hotmail.shaundalco.healthhub.databinding.FragmentHomeBinding
 import kotlinx.coroutines.launch
 import java.time.ZoneId
 

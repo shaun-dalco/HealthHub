@@ -28,4 +28,10 @@
         android:name="com.hotmail.shaundalco.healthhub.ui.HeartRateLastMonthFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_heart_rate_last_month" />
+
+    <fragment
+        android:id="@+id/nav_slideshow3"
+        android:name="com.hotmail.shaundalco.healthhub.ui.CaloriesDbFragment"
+        android:label="@string/menu_slideshow"
+        tools:layout="@layout/fragment_calories_db" />
 </navigation>
