@@ -6,24 +6,46 @@
     android:layout_height="match_parent"
     tools:context=".ui.HomeFragment">
 
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/checksteps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="72dp"
+        android:text="Steps"
+        app:layout_constraintBottom_toTopOf="@+id/btnSync"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/checkheart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Heart Rate"
+        app:layout_constraintBottom_toTopOf="@+id/checksteps"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.806" />
+
     <Button
-        android:id="@+id/btnUploadSteps"
+        android:id="@+id/btnSync"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="292dp"
-        android:text="Upload Steps"
+        android:text="Sync"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/txtStatus"
+        android:id="@+id/output"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
         android:text="Idle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnUploadSteps" />
+        app:layout_constraintTop_toBottomOf="@+id/btnSync" />
 </androidx.constraintlayout.widget.ConstraintLayout>
